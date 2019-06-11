@@ -231,7 +231,7 @@ class gfweather:
         print(msg)
         t = time.time()
         t = str(int(round(t * 1000)))
-        url = "http://www.aikf.com/ask/getAnswer.htm?&reqtype=1&tenantId=78837bf4eb9a4e068c678eb31b3da4c2&ques="+msg+"&_="+t
+        url = "http://www.aikf.com/ask/getAnswer.htm?&reqtype=1&tenantId=e1acc141f18a4f48922155ce2e178a7d&ques="+msg+"&_="+t
         r = requests.get(url).json()
         answer = r['text']['content']
         dr = re.compile(r'<[^>]+>',re.S)
