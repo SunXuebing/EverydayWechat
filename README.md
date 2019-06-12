@@ -2,15 +2,36 @@
 
 Github: [https://github.com/sfyc23/EverydayWechat](https://github.com/sfyc23/EverydayWechat)。
 
-本版本添加了图灵机器人自动聊天功能，使用需在GFWeather.py getResponse方法中配置apiKey,可到图灵官网免费申请。
-（ps:为什么没有抽取到配置文件里？因为我的python水平实在渣渣啊……(╥╯^╰╥)）
+本版本添加了图灵/aikf机器人自动聊天功能，
+使用需在`_config.yaml`修改如下配置
 
-2019年06月08日更新：
-因图灵接口免费版次数限制，新增aikf机器人接口为默认问答接口
+
+```
+
+# 问答机器人渠道
+# 1 ：图灵
+# 2 ：aikf
+robot_channel: 2
+
+# 图灵机器人设置
+api_key: ''
+user_id: ''
+
+```
+
+图灵机器人需官网申请，目前免费版100条/天，aikf暂无限制
+
+
+### 快速启动
+```
+1. 修改_config.yaml
+2. python run.py 或 nohup ./start.sh &(linux后台服务)
+```
 
 ### 待优化功能
-- 配置抽取到配置文件
+- 消息防撤回
 - 群聊功能
+- 语音支持
 
 
 # 用 Python + itchat 写一个爬虫脚本每天定时给多个女友发给微信暖心话

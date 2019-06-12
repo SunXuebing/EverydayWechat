@@ -12,7 +12,7 @@ dictum_channel: 2
 
 # 问答机器人渠道
 # 1 ：图灵
-# 2 ：爱客服
+# 2 ：aikf
 robot_channel: 2
 
 # 图灵机器人设置
