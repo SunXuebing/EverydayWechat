@@ -1,15 +1,14 @@
-import requests
+import threading
 from datetime import datetime
-from bs4 import BeautifulSoup
+
 import itchat
 from apscheduler.schedulers.blocking import BlockingScheduler
-import time
-import city_dict
-import yaml
+from bs4 import BeautifulSoup
 from itchat.content import *
-import json
-import threading
-import re
+
+import city_dict
+from Robot import *
+
 
 class gfweather:
     headers = {
@@ -21,6 +20,7 @@ class gfweather:
         self.girlfriend_list, self.alarm_hour, self.alarm_minute, self.dictum_channel = self.get_init_data()
 
     def get_init_data(self):
+        global robot_channel
         '''
         初始化基础数据
         :return:
@@ -33,6 +33,9 @@ class gfweather:
 
         dictum_channel = config.get('dictum_channel', -1)
         init_msg += f"格言获取渠道：{self.dictum_channel_name.get(dictum_channel,'无')}\n"
+
+        robotChannel = config.get('robot_channel', -1)
+        robot_channel = robotChannel
 
         girlfriend_list = []
         girlfriend_infos = config.get('girlfriend_infos')
@@ -48,7 +51,7 @@ class gfweather:
             girlfriend_list.append(girlfriend)
 
             print_msg = f"女朋友的微信昵称：{girlfriend.get('wechat_name')}\n\t女友所在城市名称：{girlfriend.get('city_name')}\n\t" \
-                f"在一起的第一天日期：{girlfriend.get('start_date')}\n\t最后一句为：{girlfriend.get('sweet_words')}\n"
+                        f"在一起的第一天日期：{girlfriend.get('start_date')}\n\t最后一句为：{girlfriend.get('sweet_words')}\n"
             init_msg += print_msg
 
         print(u"*" * 50)
@@ -56,9 +59,9 @@ class gfweather:
 
         hour, minute = [int(x) for x in alarm_timed.split(':')]
         return girlfriend_list, hour, minute, dictum_channel
-		
+
     def itchatRun(self):
-        itchat.run();		
+        itchat.run();
 
     def is_online(self, auto_login=False):
         '''
@@ -90,16 +93,14 @@ class gfweather:
             # 命令行显示登录二维码
             # itchat.auto_login(enableCmdQR=True)
             itchat.auto_login()
-            #itchat.run()
+            # itchat.run()
             if online():
                 print('登录成功')
                 return True
         else:
             print('登录成功')
             return False
-			
-	
-		
+
     def run(self):
         '''
         主运行入口
@@ -184,7 +185,6 @@ class gfweather:
             conentJson = resp.json()
             content = conentJson.get('content')
             note = conentJson.get('note')
-            # print(f"{content}\n{note}")
             return f"{content}\n{note}\n"
         else:
             print("没有获取到数据")
@@ -203,53 +203,16 @@ class gfweather:
         every_msg = soup_texts.find_all('div', class_='fp-one-cita')[0].find('a').text
         return every_msg + "\n"
 
-    @staticmethod
-    def getResponse(msg):
-        url = "http://openapi.tuling123.com/openapi/api/v2"
-        data = {
-            "reqType":0,
-            "perception": {
-                "inputText": {
-					"text": msg
-                },
-				"inputImage": {
-					"url": "imageUrl"
-                }
-            },
-            "userInfo": {
-                # 图灵机器人apiKey,需官网申请
-				"apiKey": "",
-				"userId": ""
-            }
-        }
-        data = json.dumps(data)
-        r = requests.post(url,data).json()
-        return r['results'][0]['values']['text']
-
-    @staticmethod
-    def getResponseAikf(msg):
-        print(msg)
-        t = time.time()
-        t = str(int(round(t * 1000)))
-        url = "http://www.aikf.com/ask/getAnswer.htm?&reqtype=1&tenantId=e1acc141f18a4f48922155ce2e178a7d&ques="+msg+"&_="+t
-        r = requests.get(url).json()
-        answer = r['text']['content']
-        dr = re.compile(r'<[^>]+>',re.S)
-        dd = dr.sub('',answer)
-        return dd
-		
-		
     @itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING])
     def text_reply(msg):
         try:
-            print(msg.items())
-            #return msg.get('Content','hello')
-            return gfweather.getResponseAikf(msg.get('Content','hello'))
+            if(robot_channel==1):
+              return getResponseTuling(msg.text)
+            else:
+              return getResponseAikf(msg.text)
         except Exception as e:
-            print (str(e))
+            print(e)
             return "我还不知道哦"
-			
-		
 
     def get_weather_info(self, dictum_msg='', city_code='101030100', start_date='2018-01-01', sweet_words='来自最爱你的我'):
         '''
@@ -300,7 +263,6 @@ class gfweather:
 
 
 if __name__ == '__main__':
-
     # 只查看获取数据，
     gfweather().start_today_info(True)
 

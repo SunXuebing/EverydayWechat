@@ -10,6 +10,15 @@ alarm_timed: '9:30'
 # 2 : 词霸（每日英语）
 dictum_channel: 2
 
+# 问答机器人渠道
+# 1 ：图灵
+# 2 ：爱客服
+robot_channel: 2
+
+# 图灵机器人设置
+api_key: ''
+user_id: ''
+
 girlfriend_infos:
   -
     #女友微信昵称/备注/账号均可
@@ -23,7 +32,7 @@ girlfriend_infos:
 
   #如果有你多个人需要发送，则参照这个样式，复制即可
   #-
-   # wechat_name: '陈老师'
+    #wechat_name: '陈老师'
     #city_name: '朝阳区'
     #start_date: '2018-11-11'
     #sweet_words: '来自你俊美的老公。'
