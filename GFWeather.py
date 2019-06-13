@@ -207,9 +207,9 @@ class gfweather:
     def text_reply(msg):
         try:
             if(robot_channel==1):
-              return getResponseTuling(msg.text)
+              return getResponseTuling(msg.get('Content'))
             else:
-              return getResponseAikf(msg.text)
+              return getResponseAikf(msg.get('Content'))
         except Exception as e:
             print(e)
             return "我还不知道哦"

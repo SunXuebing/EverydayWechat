@@ -28,7 +28,7 @@ Aikf机器人接口
 
 def getResponseAikf(msg):
     t = str(int(round(time.time() * 1000)))
-    url = "http://www.aikf.com/ask/getAnswer.htm?&reqtype=1&tenantId=e1acc141f18a4f48922155ce2e178a7d&ques=" + msg + "&_=" + t
+    url = "http://www.aikf.com/ask/getAnswer.htm?reqtype=1&tenantId=e1acc141f18a4f48922155ce2e178a7d&ques=" + msg + "&_=" + t
     response = requests.get(url).json()
     answer = response['text']['content']
     dr = re.compile(r'<[^>]+>', re.S)
